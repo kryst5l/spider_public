@@ -1,0 +1,37 @@
+#coding:utf-8
+
+
+import requests
+import jsonpath
+
+headers = {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3759.4 Safari/537.36",
+    "Host": "mp.weixin.qq.com",
+    "Referer": "https://mp.weixin.qq.com/cgi-bin/appmsg?t=media/appmsg_edit_v2&action=edit&isNew=1&type=10&token=1398948801&lang=zh_CN",
+    "Cookie": "noticeLoginFlag=1; pgv_pvi=2857190400; pgv_pvid=3728898360; RK=vSoJWGl1Nq; ptcz=cffe4f6a6caf2fa3be8b81f8fc0d52b717967e48b09e3bd64c6d8cf46530b3a8; eas_sid=l1J5v5x3Y9n2F5O7a6i9y0r1D5; ptui_loginuin=506660782; tvfe_boss_uuid=89fe3c49952d2fe2; o_cookie=506660782; pgv_si=s599487488; ptisp=ctc; uin=o0506660782; pgv_info=ssid=s9461019980; ua_id=OW9mYbNs5apm9uZoAAAAABsMHgLkkbL0q2Rhy5kOuRw=; cert=uafchGmJ92aPg06O9AQUCvec74B8aY6a; noticeLoginFlag=1; sig=h0136ca46e0bdd53df1be9af562e6a3c0216ba4ffecafb99558cef154a19a93cf9ce21a1e9672c02ff5; skey=@1jkxMeRgW; master_key=ku3whcFfINB9Hs+QqZKHA//lM10DUcnR1/YR4fgMUP8=; rewardsn=; wxtokenkey=777; uuid=f5439db967c3f978b8e3f7fad038a6cc; bizuin=3593913650; ticket=25ca94d01ee491f6dc534b88a2cf427155f78b71; ticket_id=gh_4c71685a96db; data_bizuin=3593913650; data_ticket=AfmkMtax/Aulnz+szoRxnpqkKGY8wOhYc8M/Fclny1i9P0RxVwHZspUppYA2CCWf; slave_sid=SWNTYTM3Q2wyU2tWbjUxSFZaR015QVYzVWlQWjhMSHFsaFlfd2NJdGtkWVoyYnRKT3MwbkZNOGlBNV9jRG1IVTVlNUhsRWRWd1NSSFBla2dJZjlrazFXWnB4enN5amVKZkR3V1g1b2x6X3B0WlgzMVA4bWRBVmRKM0ZoOWp0azBib0tSaFBOZUNqNmlLU3gw; slave_user=gh_4c71685a96db; xid=8e765410337d17ed5ebc88d695be4a80; openid2ticket_oMsU21k0lLgVr8_HZOyaHfuZB5Gs=84+AqMXRJ5XHh22OEDNfPKMtU6ZH7p5jWHMIq0DLXQI=; mm_lang=zh_CN"
+}
+
+for i in range(44):
+    url = "https://mp.weixin.qq.com/cgi-bin/appmsg?token=1398948801&lang=zh_CN&f=json&ajax=1&random=0.25771732906228184&action=list_ex&begin={}&count=5&query=&fakeid=MzUzNzcxNDc5Ng%3D%3D&type=9".format(
+        str(i * 5))
+
+    response = requests.get(url, headers=headers)
+    print(response)
+
+    jsonRes = response.json()
+    print(jsonRes)
+
+    titleList = jsonpath.jsonpath(jsonRes, "$..title")
+    print(titleList)
+    urlList = jsonpath.jsonpath(jsonRes, "$..link")
+
+    # 遍历 构造可存储字符串
+    for index in range(len(titleList)):
+        title = titleList[index]
+        url = urlList[index]
+
+        scvStr = "%s,%s,\n" % (title, url)
+        # with open('get.txt','a+') as f:
+        #     f.write(scvStr)
+        with open("info2.csv", "a+", newline='') as f:
+            f.write(scvStr)
